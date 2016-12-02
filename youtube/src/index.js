@@ -14,12 +14,12 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { 
+		this.state = {
 			videos: [],
 			seletedVideo: null
 		}
 
-		this.videoSearch('aprender ingles')
+		this.videoSearch('react and redux');
 	}
 
 	videoSearch(term) {
