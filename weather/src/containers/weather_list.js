@@ -13,7 +13,11 @@ class WeatherList extends Component {
 		return (
 			<tr key={name} >
 				<td>{name}</td>
-				<td>{name}</td>
+				<td>
+					<Sparklines height={100} width={180} data={temps}>
+						<SparklinesLine color="red" />
+					</Sparklines>
+				</td>
 				<td>{name}</td>
 			</tr>
 		);
