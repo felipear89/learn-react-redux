@@ -16,9 +16,11 @@ class PostsNew extends Component {
 	onSubmit(props) {
 		this.props.createPost(props)
 			.then(() => {
-				// blog post has been created, navigate the user to the index
-				this.context.router.push('/');
-			});
+		        // blog post has been created, navigate the user to the index
+		        // We navigate by calling this.context.router.push with the
+		        // new path to navigate to.
+		        this.context.router.push('/');
+	    	});
 	}
 
 	render() {
@@ -27,7 +29,7 @@ class PostsNew extends Component {
 		// const handleSubmit = this.props.handleSubmit
 
 		return (
-			<form onSubmit={handleSubmit(this.onSubmit.bind(this)} >
+			<form onSubmit={handleSubmit(this.onSubmit.bind(this))} >
 				<h3>Create A New Post</h3>
 				
 				<div className={this.getFormGroupClass(title)} >
