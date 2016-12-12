@@ -1,12 +1,43 @@
 import React, { Component, PropTypes } from 'react';
+import _ from 'lodash';
 import { reduxForm } from 'redux-form';
 import { createPost } from '../actions/index';
 import { Link } from 'react-router';
+
+const FIELDS = {
+	title: {
+		type: 'input',
+		label: 'Title for Post',
+	}, 
+	categories: {
+		type: 'input',
+		label: 'Enter some categories for this post',
+	},
+	content: {
+		type: 'input',
+		label: 'Type the content',
+	}
+};
 
 class PostsNew extends Component {
 
 	static contextTypes = {
 		router: PropTypes.object
+	}
+
+	renderField(fieldConfig, field) {
+
+		const fieldHelper = this.props.fields[field];
+
+		return (
+			<div className={this.getFormGroupClass(fieldHelper)} >
+				<label>{fieldConfig.label}</label>
+				<fieldConfig.type type="text" className="form-control" {...fieldHelper} />
+				<div className="form-control-feedback">
+					{fieldHelper.touched ? fieldHelper.error : ''}
+				</div>
+			</div>
+		);
 	}
 
 	getFormGroupClass(field) {
@@ -24,37 +55,13 @@ class PostsNew extends Component {
 	}
 
 	render() {
-		const { fields: { title, categories, content }, handleSubmit } = this.props;
-		// const title = this.props.fields.title
-		// const handleSubmit = this.props.handleSubmit
+		const { handleSubmit } = this.props;
 
 		return (
 			<form onSubmit={handleSubmit(this.onSubmit.bind(this))} >
 				<h3>Create A New Post</h3>
 				
-				<div className={this.getFormGroupClass(title)} >
-					<label>Title</label>
-					<input type="text" className="form-control" {...title} />
-					<div className="form-control-feedback">
-						{title.touched ? title.error : ''}
-					</div>
-				</div>
-
-				<div className={this.getFormGroupClass(categories)} >
-					<label>Categories</label>
-					<input type="text" className="form-control" {...categories} />
-					<div className="form-control-feedback">
-						{categories.touched ? categories.error : ''}
-					</div>
-				</div>
-
-				<div className={this.getFormGroupClass(content)} >
-					<label>Content</label>
-					<textarea className="form-control" {...content} />
-					<div className="form-control-feedback">
-						{content.touched ? content.error : ''}
-					</div>
-				</div>
+				{ _.map(FIELDS, this.renderField.bind(this)) }
 
 				<button type="submit" className="btn btn-primary">Submit</button>
 				<Link to="/" className="btn btn-danger">Cancel</Link>
@@ -67,15 +74,11 @@ class PostsNew extends Component {
 function validate(values) {
 	const errors = {};
 
-	if (!values.title) {
-		errors.title = 'Enter a username';
-	}
-	if (!values.categories) {
-		errors.categories = 'Enter categories';
-	}
-	if (!values.content) {
-		errors.content = 'Enter content';
-	}
+	_.each(FIELDS, (obj, field) => {
+		if (!values[field]) {
+			errors[field] = `Enter a ${field}`;
+		}
+	});
 
 	return errors;
 }
@@ -85,6 +88,6 @@ function validate(values) {
 // reduxForm: 1st is form config, 2nd is mapStateToProps, 3rd is mapDispatchToProps
 export default reduxForm({
 	form: 'PostsNewForm',
-	fields: ['title', 'categories', 'content'],
+	fields: _.keys(FIELDS),
 	validate
 }, null, { createPost })(PostsNew);
